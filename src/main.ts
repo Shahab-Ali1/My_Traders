@@ -19,7 +19,11 @@ async function bootstrap() {
   // swagger configuration
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   app.setGlobalPrefix('api/v1');
-  SwaggerModule.setup('/', app, documentFactory);
+  SwaggerModule.setup('/', app, documentFactory, {
+    swaggerOptions: {
+      defaultModelsExpandDepth: -1, // Hides Schemas section
+    },
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }

@@ -50,6 +50,18 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     password: string;
+    
+     /**
+    * The password of the user.
+    * @example "password123"
+    */
+    @ApiProperty({
+        type: 'string',
+        example: 'password123'
+    })
+    @IsString()
+    @IsNotEmpty()
+    confirm_password: string;
 
     /**
     * The gender of the user.

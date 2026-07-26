@@ -14,13 +14,6 @@ export class UserController {
         return 'Get all Users';
     }
 
-    @Post("create")
-    @ApiBody({ type: CreateUserDto })
-    async createUser(
-        @Body() createUserDto: CreateUserDto
-    ) {
-        return this.userService.createUser(createUserDto);
-    }
     @Patch("update")
     async updateUser() {
         return this.userService.updateUser();
