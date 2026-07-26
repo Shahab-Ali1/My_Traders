@@ -23,13 +23,13 @@ export class UserService {
 
     async loginUser(loginUserDto: LoginUserDto) {
         const getUser = await this.repository.findOne({
-            where: { email: loginUserDto.email }
+            where: {email: loginUserDto.email}
         })
-        if (!getUser) {
+        if(!getUser) {
             throw new HttpException("User not found", HttpStatus.NOT_FOUND);
         }
         const isPasswordMatched = await PasswordUtil.compare(loginUserDto.password, getUser.password);
-        if (!isPasswordMatched) {
+        if(!isPasswordMatched) {
             throw new HttpException("Invalid password", HttpStatus.UNAUTHORIZED);
         }
         return getUser;
