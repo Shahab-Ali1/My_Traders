@@ -3,6 +3,7 @@ import { UserService } from '../service/user.service';
 import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { RolesGuard } from 'src/common/guards/role.guard';
 
 @Controller("user")
 @UseInterceptors(ClassSerializerInterceptor)
@@ -11,13 +12,13 @@ export class UserController {
         private readonly userService: UserService,
     ) { }
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
+    @UseGuards(RolesGuard)
     @ApiBearerAuth('token')
     @Get()
     getUsers(
         @CurrentUser() user
     ) {
-        console.log("user", user)
         return 'Get all Users';
     }
 
