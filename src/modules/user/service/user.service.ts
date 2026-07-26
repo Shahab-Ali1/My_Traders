@@ -32,6 +32,11 @@ export class UserService {
         if(!isPasswordMatched) {
             throw new HttpException("Invalid password", HttpStatus.UNAUTHORIZED);
         }
+        await this.repository.update(getUser.id, {
+            last_login_at: new Date().toISOString()
+        });
+        
+        getUser.last_login_at = new Date().toISOString();
         return getUser;
     }
 
