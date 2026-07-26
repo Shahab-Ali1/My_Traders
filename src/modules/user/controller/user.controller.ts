@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Post, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Patch, Post, UseInterceptors } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ApiBody } from '@nestjs/swagger';
@@ -17,8 +17,12 @@ export class UserController {
     @Post("create")
     @ApiBody({ type: CreateUserDto })
     async createUser(
-       @Body() createUserDto: CreateUserDto
+        @Body() createUserDto: CreateUserDto
     ) {
         return this.userService.createUser(createUserDto);
+    }
+    @Patch("update")
+    async updateUser() {
+        return this.userService.updateUser();
     }
 }
