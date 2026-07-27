@@ -27,7 +27,7 @@ export class CreateUser1784920867348 extends BaseMigration implements MigrationI
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        queryRunner.dropTable('users');
+        await queryRunner.dropTable('users');
     }
 
 }
