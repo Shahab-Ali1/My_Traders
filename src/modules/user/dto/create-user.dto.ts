@@ -1,13 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Gender } from "../constants/user-role.enum";
 
 export class CreateUserDto {
-     /**
-    * The first name of the user.
-    * @example "John"
-    */
-   @ApiProperty({
+    /**
+   * The first name of the user.
+   * @example "John"
+   */
+    @ApiProperty({
         type: 'string',
         example: 'John'
     })
@@ -15,11 +15,11 @@ export class CreateUserDto {
     @IsNotEmpty()
     first_name: string;
 
-     /**
-    * The last name of the user.
-    * @example "Doe"
-    */
-   @ApiProperty({
+    /**
+   * The last name of the user.
+   * @example "Doe"
+   */
+    @ApiProperty({
         type: 'string',
         example: 'Doe'
     })
@@ -27,11 +27,11 @@ export class CreateUserDto {
     @IsNotEmpty()
     last_name: string;
 
-     /**
-    * The email of the user.
-    * @example "john.doe@example.com"
-    */
-   @ApiProperty({
+    /**
+   * The email of the user.
+   * @example "john.doe@example.com"
+   */
+    @ApiProperty({
         type: 'string',
         example: 'john.doe@example.com'
     })
@@ -39,10 +39,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     email: string;
 
-     /**
-    * The password of the user.
-    * @example "password123"
-    */
+    /**
+   * The password of the user.
+   * @example "password123"
+   */
     @ApiProperty({
         type: 'string',
         example: 'password123'
@@ -50,11 +50,11 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     password: string;
-    
-     /**
-    * The password of the user.
-    * @example "password123"
-    */
+
+    /**
+   * The password of the user.
+   * @example "password123"
+   */
     @ApiProperty({
         type: 'string',
         example: 'password123'
@@ -76,4 +76,50 @@ export class CreateUserDto {
     })
     @IsEnum(Gender)
     gender: Gender
+}
+
+
+export class UpdateUserDto {
+    /**
+   * The first name of the user.
+   * @example "John"
+   */
+    @ApiProperty({
+        type: 'string',
+        example: 'John'
+    })
+    @IsString()
+    @IsNotEmpty()
+    first_name: string;
+
+    /**
+   * The last name of the user.
+   * @example "Doe"
+   */
+    @ApiProperty({
+        type: 'string',
+        example: 'Doe'
+    })
+    @IsString()
+    @IsNotEmpty()
+    last_name: string;
+
+
+    /**
+    * The gender of the user.
+    * @example "male"
+    */
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({
+        type: 'string',
+        enum: Object.values(Gender),
+        example: 'male'
+    })
+    @IsEnum(Gender)
+    gender: Gender
+
+    @IsOptional()
+    @ApiPropertyOptional({ type: "string", format: "binary" })
+    media?: string
 }
