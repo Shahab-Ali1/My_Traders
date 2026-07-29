@@ -75,7 +75,12 @@ export class CreateUserDto {
         example: 'male'
     })
     @IsEnum(Gender)
-    gender: Gender
+    gender: Gender;
+
+
+    @IsOptional()
+    @ApiPropertyOptional({ type: "string", format: "binary" })
+    media?: string
 }
 
 

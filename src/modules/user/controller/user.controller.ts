@@ -33,9 +33,6 @@ export class UserController {
         @Body() updateUserDto: UpdateUserDto,
         @UploadedFile() file: Express.Multer.File
     ) {
-        console.log("updateUserDto", updateUserDto)
-        console.log("file", file);
-
         return this.userService.updateUser();
     }
 }

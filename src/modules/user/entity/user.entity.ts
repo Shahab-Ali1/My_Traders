@@ -1,7 +1,7 @@
 import { BaseEntity } from "src/base/entity/base.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { Gender, UserRoles } from "../constants/user-role.enum";
-import { Exclude } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 import { Media } from "./media.entity";
 
 @Entity("users")
@@ -12,6 +12,7 @@ export class User extends BaseEntity {
     @Column({ type: 'varchar', length: 100, nullable: false })
     last_name: string;
 
+    @Exclude()
     @OneToOne(() => Media, {
         nullable: true,
         onDelete: 'SET NULL',
@@ -48,4 +49,11 @@ export class User extends BaseEntity {
 
     @Column({ type: 'json', nullable: true })
     metadata: any;
+
+    @Expose()
+    get profileImageUrl() {
+        if (!this.profileImage) return null;
+
+        return `${process.env.APP_URL}/${this.profileImage.key}/${this.profileImage.name}`;
+    }
 }

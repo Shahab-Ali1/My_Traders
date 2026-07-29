@@ -1,10 +1,11 @@
 import { BadRequestException } from "@nestjs/common";
 import multer, { diskStorage } from "multer";
-import path, { extname } from "path";
+import * as path from 'path';
+import { extname } from 'path';
 import * as fs from 'fs';
 import { existsSync, mkdirSync } from "fs";
 
-export const storage = (directory: string) => {
+export const storage = (directory: string = "images") => {
     return {
         // storage: multer({
         storage: diskStorage({

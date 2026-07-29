@@ -13,11 +13,11 @@ export class CreateMedia1785147466420 extends BaseMigration implements Migration
             { name: 'mime_type', type: 'varchar', length: '255', isNullable: false },
             { name: 'size', type: 'bigint', isNullable: false },
             { name: 'extension', type: 'varchar', length: '255', isNullable: false },
-            { name: 'metadata', type: 'json', isNullable: false },
+            { name: 'metadata', type: 'json', isNullable: true },
         ]);
 
         await queryRunner.query(`
-            CREATE UNIQUE INDEX idx_media_key
+            CREATE INDEX idx_media_key
             ON media(key)
         `);
     }

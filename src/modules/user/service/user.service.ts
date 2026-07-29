@@ -5,12 +5,14 @@ import { User } from '../entity/user.entity';
 import { Repository } from 'typeorm';
 import { PasswordUtil } from 'src/utility/hashing';
 import { LoginUserDto } from '../dto/login-user.dto';
+import { MediaService } from './media.service';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
         protected repository: Repository<User>,
+        protected mediaService: MediaService,
     ) { }
 
     async findOneById(id: number) {
@@ -26,7 +28,8 @@ export class UserService {
 
     async loginUser(loginUserDto: LoginUserDto) {
         const getUser = await this.repository.findOne({
-            where: { email: loginUserDto.email }
+            where: { email: loginUserDto.email },
+            relations:["profileImage"]
         })
         if (!getUser) {
             throw new HttpException("User not found", HttpStatus.NOT_FOUND);
@@ -43,7 +46,7 @@ export class UserService {
         return getUser;
     }
 
-    async createUser(createUserDto: CreateUserDto) {
+    async createUser(createUserDto: CreateUserDto, file) {
         // validate if email already exist throw error
         const user = await this.repository.findOne({
             where: { email: createUserDto.email }
@@ -57,7 +60,15 @@ export class UserService {
         }
         const hashedPassword = await PasswordUtil.hash(createUserDto.password);
         const create = this.repository.create({ ...createUserDto, last_login_at: new Date().toISOString() ,password: hashedPassword });
+        // return await this.repository.save(create);
+
+        if(file) {
+            const module = "user/profile"
+            const media: any = await this.mediaService.uploadMedia(file, module, file.originalname, "profile");
+            create.profileImage = media.id;
+        }
         return await this.repository.save(create);
+
     }
 
     async updateUser() {
