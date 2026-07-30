@@ -80,17 +80,16 @@ export class UserService {
         if (file) {
             // remove old media
             if (findUser.profileImage) {
-                const oldImagePath = path.join(
-                    process.cwd(),
-                    'public',
-                    findUser.profileImage.key,
-                    findUser.profileImage.name,
-                );
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
-                }
-                console.log("user.media", findUser.profileImage)
-                await this.mediaService.deleteMedia(findUser.profileImage.id);
+                // const oldImagePath = path.join(
+                //     process.cwd(),
+                //     'public',
+                //     findUser.profileImage.key,
+                //     findUser.profileImage.name,
+                // );
+                // if (fs.existsSync(oldImagePath)) {
+                //     fs.unlinkSync(oldImagePath);
+                // }
+                await this.mediaService.deleteMedia(findUser.profileImage.id, findUser.profileImage.key, findUser.profileImage.name);
             }
             // upload new media
             const module = "user/profile"

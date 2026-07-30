@@ -32,6 +32,7 @@ export class CreateCategories1785415938267 extends BaseMigration implements Migr
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.dropTable('categories');
     }
 
 }

@@ -3,6 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Media } from "../entity/media.entity";
 import { Repository } from "typeorm";
 import { fileInfo } from "src/utility/file.util";
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class MediaService {
@@ -29,7 +31,16 @@ export class MediaService {
         return savedMedia;
     }
 
-    async deleteMedia(id: number) {
+    async deleteMedia(id: number, key, name) {
+        const oldImagePath = path.join(
+            process.cwd(),
+            'public',
+            key,
+            name,
+        );
+        if (fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
+        }
         return await this.repository.delete(id);
     }
 

@@ -10,7 +10,6 @@ export class Category extends BaseEntity {
     @Column({ type: 'varchar', length: 255, nullable: true })
     description: string;
 
-
     @Column({ type: 'json', nullable: true })
     metadata: any;
 
