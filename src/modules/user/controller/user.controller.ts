@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Get, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Get, Param, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
@@ -26,13 +26,16 @@ export class UserController {
     }
 
     @Patch("update")
-    @UseInterceptors(FileInterceptor('media', storage('users')))
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('token')
+    @UseInterceptors(FileInterceptor('media', storage()))
     @ApiConsumes('multipart/form-data')
     @ApiBody({ type: UpdateUserDto })
     async updateUser(
+        @CurrentUser() user,
         @Body() updateUserDto: UpdateUserDto,
         @UploadedFile() file: Express.Multer.File
     ) {
-        return this.userService.updateUser();
+        return this.userService.updateUser(updateUserDto, file, user);
     }
 }

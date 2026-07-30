@@ -55,11 +55,11 @@ export const fileInfo = (file) => {
     }
 
     let fileName = file.filename || file.originalname || path.basename(file) || null;
-    if (typeof file !== "string") {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = extname(file.originalname);
-        fileName = `${uniqueSuffix}${ext}`;
-    }
+    // if (typeof file !== "string") {
+    //     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    //     const ext = extname(file.originalname);
+    //     fileName = `${uniqueSuffix}${ext}`;
+    // }
     return {
         name: fileName,
         extension,

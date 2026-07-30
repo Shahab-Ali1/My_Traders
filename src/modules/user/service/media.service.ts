@@ -29,4 +29,8 @@ export class MediaService {
         return savedMedia;
     }
 
+    async deleteMedia(id: number) {
+        return await this.repository.delete(id);
+    }
+
 };
