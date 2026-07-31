@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateCategoryDto {
     @ApiProperty({
@@ -16,6 +17,17 @@ export class CreateCategoryDto {
     })
     @IsString()
     description?: string;
+
+    @ApiProperty({
+        type: 'boolean',
+        example: true,
+        description: 'status is active or non-active',
+        default: true,
+    })
+    @IsNotEmpty()
+    @Transform(({ value }) => value === 'true' || value === true)
+    @IsBoolean()
+    status: boolean;
 
 
     @IsOptional()

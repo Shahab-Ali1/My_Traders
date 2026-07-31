@@ -1,4 +1,6 @@
+import { Exclude, Expose } from "class-transformer";
 import { BaseEntity } from "src/base/entity/base.entity";
+import { FlagsEnum } from "src/common/constants/flags.enum";
 import { Media } from "src/modules/user/entity/media.entity";
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 
@@ -13,6 +15,7 @@ export class Category extends BaseEntity {
     @Column({ type: 'json', nullable: true })
     metadata: any;
 
+    @Exclude()
     @OneToOne(() => Media, {
         nullable: true,
         onDelete: 'SET NULL',
@@ -20,6 +23,16 @@ export class Category extends BaseEntity {
     @JoinColumn({
         name: 'image_id',
     })
-    image_id: Media;
+    media: Media;
+
+    @Expose()
+    get status(): string {
+        return this.flags === FlagsEnum.ACTIVE ? 'active' : 'inactive';
+    }
+
+    @Expose()
+    get image_url() {
+        return this.media ? this.media.url : null;
+    }
 
 }

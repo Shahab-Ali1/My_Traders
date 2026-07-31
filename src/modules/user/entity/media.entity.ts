@@ -1,3 +1,4 @@
+import { Expose } from "class-transformer";
 import { BaseEntity } from "src/base/entity/base.entity";
 import { Column, Entity } from "typeorm";
 
@@ -30,5 +31,10 @@ export class Media extends BaseEntity {
     // Add metadata column
     @Column({ type: 'jsonb', nullable: true })
     metadata?: Record<string, any>;
+
+    @Expose()
+    get url() {
+        return `${process.env.APP_URL}/${this.key}/${this.name}`;
+    }
 
 }
