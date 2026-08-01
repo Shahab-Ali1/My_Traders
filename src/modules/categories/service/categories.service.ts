@@ -39,15 +39,25 @@ export class CategoriesService {
     }
   }
 
-  async findAll(status) {
-    const getCategories = await this.repository.find({
+  async findAll(status, pageNumber: number = 1, pageSize: number = 10) {
+    const offset = (pageNumber - 1) * pageSize;
+    const [ getCategories, total ] = await this.repository.findAndCount({
       where: {
         flags: status === 'active' ? FlagsEnum.ACTIVE : FlagsEnum.IN_ACTIVE
       },
-      relations: ['media']
+      relations: ['media'],
+      skip: offset,
+      take: pageSize
     });
 
-    return getCategories;
+    return {
+      data: getCategories,
+      total: total,
+      query: {
+        page_number: pageNumber,
+        page_size: pageSize,
+      }
+    };
   }
 
   async findOne(id: number) {

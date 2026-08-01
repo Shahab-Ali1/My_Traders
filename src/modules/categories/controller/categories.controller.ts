@@ -36,10 +36,14 @@ export class CategoriesController {
 
   @Get()
   @ApiQuery({ name: 'status', description: 'active or in-active categories', enum: ['active', 'inactive'], required: true })
+  @ApiQuery({ name: 'page_number', required: false, type: Number, example: 1, description: 'Page number (default: 1)' })
+  @ApiQuery({ name: 'page_size', required: false, type: Number, example: 10, description: 'Number of results per page (default: 10)' })
   findAll(
-    @Query('status') status: 'active' | 'inactive'
+    @Query('status') status: 'active' | 'inactive',
+    @Query('page_number') pageNumber: number = 1,
+    @Query('page_size') pageSize: number = 10,
   ) {
-    return this.categoriesService.findAll(status);
+    return this.categoriesService.findAll(status, pageNumber, pageSize);
   }
 
   @Get(':id')
