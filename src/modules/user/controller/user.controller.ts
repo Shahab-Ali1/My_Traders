@@ -5,14 +5,14 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UpdateUserDto } from '../dto/create-user.dto';
+import { CreateUserDto, UpdateUserDto } from '../dto/create-user.dto';
 import { storage } from 'src/utility/file.util';
 
 @Controller("user")
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
     constructor(
-        private readonly userService: UserService,
+        private readonly service: UserService,
     ) { }
 
     // @UseGuards(JwtAuthGuard)
@@ -23,6 +23,19 @@ export class UserController {
         @CurrentUser() user
     ) {
         return 'Get all Users';
+    }
+
+    @UseGuards(RolesGuard)
+    @ApiBearerAuth('token')
+    @Post("create")
+    @UseInterceptors(FileInterceptor('media', storage()))
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({ type: CreateUserDto })
+    createUser(
+        @Body() createUserDto: CreateUserDto,
+        @UploadedFile() file: Express.Multer.File
+    ) {
+        return this.service.createUser(createUserDto, file);
     }
 
     @Patch("update")
@@ -36,6 +49,6 @@ export class UserController {
         @Body() updateUserDto: UpdateUserDto,
         @UploadedFile() file: Express.Multer.File
     ) {
-        return this.userService.updateUser(updateUserDto, file, user);
+        return this.service.updateUser(updateUserDto, file, user);
     }
 }

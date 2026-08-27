@@ -52,7 +52,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       email: payload.email,
       is_admin: payload.role === UserRoles.ADMIN,
       last_login_at: payload.last_login_at,
-      gender: payload.gender
+      gender: payload.gender,
+      storeId: payload.storeId
     };
   }
 

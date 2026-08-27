@@ -3,10 +3,11 @@ import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
-import { Category } from '../entities/category.entity';
+import { Category } from '../entity/category.entity';
 import { MediaService } from 'src/modules/user/service/media.service';
 import { Flags } from 'src/utility/flags';
 import { FlagsEnum } from 'src/common/constants/flags.enum';
+import { User } from 'src/modules/user/entity/user.entity';
 
 @Injectable()
 export class CategoriesService {
@@ -16,9 +17,11 @@ export class CategoriesService {
     protected mediaService: MediaService
   ) { }
 
-  async create(createCategoryDto: CreateCategoryDto, file?: Express.Multer.File) {
+  async create(createCategoryDto: CreateCategoryDto, user: User, file?: Express.Multer.File) {
     const category = await this.repository.findOne({
-      where: { name: ILike(createCategoryDto.name) }
+      where: {
+        name: ILike(createCategoryDto.name),
+        storeId: user.storeId as number}
     });
     if (category) {
       throw new HttpException('Category already exist.', HttpStatus.CONFLICT);
@@ -26,7 +29,8 @@ export class CategoriesService {
     const create = this.repository.create({
       name: createCategoryDto.name,
       description: createCategoryDto.description,
-      flags: createCategoryDto.status ? 1 : 0
+      flags: createCategoryDto.status ? 1 : 0,
+      storeId: user.storeId as number
     })
     if (file) {
       const module = "user/categories"
@@ -39,10 +43,11 @@ export class CategoriesService {
     }
   }
 
-  async findAll(status, pageNumber: number = 1, pageSize: number = 10) {
+  async findAll(status, user, pageNumber: number = 1, pageSize: number = 10) {
     const offset = (pageNumber - 1) * pageSize;
-    const [ getCategories, total ] = await this.repository.findAndCount({
+    const [getCategories, total] = await this.repository.findAndCount({
       where: {
+        storeId: user.storeId,
         flags: status === 'active' ? FlagsEnum.ACTIVE : FlagsEnum.IN_ACTIVE
       },
       relations: ['media'],
@@ -60,9 +65,12 @@ export class CategoriesService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user: User) {
     const category = await this.repository.findOne({
-      where: { id: id },
+      where: {
+        id: id,
+        storeId: user.storeId as number
+      },
       relations: ['media']
     });
 
@@ -72,8 +80,8 @@ export class CategoriesService {
     return category;
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto, file: Express.Multer.File) {
-    const category = await this.findOne(id);
+  async update(id: number, updateCategoryDto: UpdateCategoryDto, user: User, file?: Express.Multer.File) {
+    const category = await this.findOne(id, user);
 
     if (file) {
       if (category.media) {
@@ -93,8 +101,8 @@ export class CategoriesService {
     return "Category updated successfully";
   }
 
-  async remove(id: number) {
-    const category = await this.findOne(id);
+  async remove(id: number, user: User) {
+    const category = await this.findOne(id, user);
     if (category.media) {
       await this.mediaService.deleteMedia(category.media.id, category.media.key, category.media.name);
     }

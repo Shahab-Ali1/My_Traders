@@ -5,6 +5,7 @@ export class CreateCategories1785415938267 extends BaseMigration implements Migr
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await this.createTable(queryRunner, 'categories', [
+            { name: 'store_id', type: 'int', isNullable: false },
             { name: "name", type: "varchar", length: "100", isNullable: false },
             { name: "description", type: "text", isNullable: true },
             { name: 'image_id', type: 'bigint', isNullable: true },
@@ -15,6 +16,18 @@ export class CreateCategories1785415938267 extends BaseMigration implements Migr
         await queryRunner.createForeignKey(
             'categories',
             new TableForeignKey({
+                name: 'FK_categories_store_id',
+                columnNames: ['store_id'],
+                referencedColumnNames: ['id'],
+                referencedTableName: 'stores',
+                onDelete: 'SET NULL',
+            }),
+        );
+
+        await queryRunner.createForeignKey(
+            'categories',
+            new TableForeignKey({
+                name: 'FK_categories_image_id',
                 columnNames: ['image_id'],
                 referencedColumnNames: ['id'],
                 referencedTableName: 'media',
@@ -32,6 +45,10 @@ export class CreateCategories1785415938267 extends BaseMigration implements Migr
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.dropForeignKey('categories', 'FK_categories_store_id');
+        await queryRunner.dropForeignKey('categories', 'FK_categories_image_id');
+        await queryRunner.dropIndex('categories', 'IDX_CATEGORIES_NAME');
+        
         await queryRunner.dropTable('categories');
     }
 

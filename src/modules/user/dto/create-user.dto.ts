@@ -4,6 +4,17 @@ import { Gender } from "../constants/user-role.enum";
 
 export class CreateUserDto {
     /**
+      * The id of the store.
+      * @example "1"
+      */
+    @ApiProperty({
+        type: 'number',
+        example: 1
+    })
+    @IsNotEmpty()
+    store_id: number;
+
+    /**
    * The first name of the user.
    * @example "John"
    */

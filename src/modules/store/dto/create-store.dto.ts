@@ -2,28 +2,30 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class CreateCategoryDto {
-    @ApiProperty({
-        type: 'number',
-        example: 1
-    })
-    @IsNotEmpty()
-    store_id: number;
-
+export class CreateStoreDto {
     @ApiProperty({
         type: 'string',
-        example: 'Beverages'
+        example: 'my store'
     })
     @IsString()
     @IsNotEmpty()
     name: string;
 
-    @ApiPropertyOptional({
+    @ApiProperty({
         type: 'string',
-        example: 'Soft drinks'
+        example: '123 Main St'
     })
     @IsString()
-    description?: string;
+    @IsNotEmpty()
+    address: string;
+
+    @ApiProperty({
+        type: 'string',
+        example: '123-456-7890'
+    })
+    @IsString()
+    @IsNotEmpty()
+    phone: string;  
 
     @ApiProperty({
         type: 'boolean',
@@ -37,7 +39,4 @@ export class CreateCategoryDto {
     status: boolean;
 
 
-    @IsOptional()
-    @ApiPropertyOptional({ type: "string", format: "binary" })
-    media?: string
 }

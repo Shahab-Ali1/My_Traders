@@ -62,7 +62,14 @@ export class UserService {
             throw new HttpException("Password and confirm password is not matched", HttpStatus.BAD_REQUEST)
         }
         const hashedPassword = await PasswordUtil.hash(createUserDto.password);
-        const create = this.repository.create({ ...createUserDto, last_login_at: new Date().toISOString(), password: hashedPassword });
+        const create = this.repository.create(
+            {
+                ...createUserDto,
+                storeId: createUserDto.store_id,
+                last_login_at: new Date().toISOString(),
+                password: hashedPassword
+            }
+        );
         // return await this.repository.save(create);
 
         if (file) {
@@ -96,7 +103,7 @@ export class UserService {
             const media: any = await this.mediaService.uploadMedia(file, module, file.originalname, "profile");
             findUser.profileImage = media.id;
         }
-        await this.repository.update(findUser.id, {...findUser, ...updateUserDto });
+        await this.repository.update(findUser.id, { ...findUser, ...updateUserDto });
         return "user updated successfully.";
     }
 }

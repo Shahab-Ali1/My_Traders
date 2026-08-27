@@ -8,6 +8,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/utility/file.util';
 import * as path from 'path';
 import * as fs from 'fs/promises';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @Controller('categories')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -20,11 +21,12 @@ export class CategoriesController {
   @UseInterceptors(FileInterceptor('media', storage()))
   @ApiConsumes('multipart/form-data')
   async create(
+    @CurrentUser() user,
     @Body() createCategoryDto: CreateCategoryDto,
     @UploadedFile() file: Express.Multer.File
   ) {
     try {
-      return await this.categoriesService.create(createCategoryDto, file);
+      return await this.categoriesService.create(createCategoryDto, user, file);
     } catch (error) {
       if (file) {
         await fs.unlink(path.resolve(file.path)).catch(() => { });
@@ -42,13 +44,18 @@ export class CategoriesController {
     @Query('status') status: 'active' | 'inactive',
     @Query('page_number') pageNumber: number = 1,
     @Query('page_size') pageSize: number = 10,
+    @CurrentUser() user
+
   ) {
-    return this.categoriesService.findAll(status, pageNumber, pageSize);
+    return this.categoriesService.findAll(status, user, pageNumber, pageSize);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+  findOne(
+    @Param('id') id: string,
+    @CurrentUser() user
+  ) {
+    return this.categoriesService.findOne(+id, user);
   }
 
   @Patch(':id')
@@ -57,10 +64,11 @@ export class CategoriesController {
   async update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
-    @UploadedFile() file: Express.Multer.File
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user
   ) {
     try {
-      return this.categoriesService.update(+id, updateCategoryDto, file);
+      return this.categoriesService.update(+id, updateCategoryDto, user, file);
     } catch (error) {
       if (file) {
         await fs.unlink(path.resolve(file.path)).catch(() => { });
@@ -73,7 +81,8 @@ export class CategoriesController {
   @Delete(':id')
   async remove(
     @Param('id') id: string,
+    @CurrentUser() user
   ) {
-    return await this.categoriesService.remove(+id);
+    return await this.categoriesService.remove(+id, user);
   }
 }

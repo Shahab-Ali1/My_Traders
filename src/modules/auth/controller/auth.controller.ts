@@ -30,7 +30,8 @@ export class AuthController {
             email: user.email,
             role: user.role,
             gender: user.gender,
-            last_login_at: user.last_login_at
+            last_login_at: user.last_login_at,
+            storeId: user.storeId,
         };
         const token = await this.service.generateToken(payload);
         user.access_token = token;
@@ -39,16 +40,16 @@ export class AuthController {
         return user;
     }
 
-    @Post("signup")
-    @UseInterceptors(FileInterceptor('media', storage()))
-    @ApiConsumes('multipart/form-data')
-    @ApiBody({ type: CreateUserDto })
-    createUser(
-        @Body() createUserDto: CreateUserDto,
-        @UploadedFile() file: Express.Multer.File
-    ) {
-        return this.userService.createUser(createUserDto, file);
-    }
+    // @Post("signup")
+    // @UseInterceptors(FileInterceptor('media', storage()))
+    // @ApiConsumes('multipart/form-data')
+    // @ApiBody({ type: CreateUserDto })
+    // createUser(
+    //     @Body() createUserDto: CreateUserDto,
+    //     @UploadedFile() file: Express.Multer.File
+    // ) {
+    //     return this.userService.createUser(createUserDto, file);
+    // }
 
 
 }

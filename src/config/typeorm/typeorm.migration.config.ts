@@ -7,7 +7,7 @@ ConfigModule.forRoot({
   isGlobal: true,
 });
 
-const paths = {
+export const paths = {
   entities: ['src/modules/**/entity/*.entity{.ts,.js}'],
   migrations: ['src/modules/**/database/migrations/*.ts'],
   seeds: ['src/modules/**/database/seeders/*.seed.ts'],

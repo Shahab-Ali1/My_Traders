@@ -1,8 +1,9 @@
 import { Exclude, Expose } from "class-transformer";
 import { BaseEntity } from "src/base/entity/base.entity";
 import { FlagsEnum } from "src/common/constants/flags.enum";
+import { Store } from "src/modules/store/entity/store.entity";
 import { Media } from "src/modules/user/entity/media.entity";
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 
 @Entity('categories')
 export class Category extends BaseEntity {
@@ -24,6 +25,20 @@ export class Category extends BaseEntity {
         name: 'image_id',
     })
     media: Media;
+
+    @Column({
+        name: 'store_id',
+        type: 'integer',
+        nullable: true,
+    })
+    storeId: number;
+
+    @ManyToOne(() => Store, (store) => store.users, {
+        nullable: true,
+        onDelete: 'SET NULL',
+    })
+    @JoinColumn({ name: 'store_id' })
+    store: Store;
 
     @Expose()
     get status(): string {

@@ -19,6 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
+    "seed": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/typeorm/typeorm.seed.config.ts",
+    "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed -n src/config/typeorm/typeorm.seed.config.ts",
     "migration:run": "npm run typeorm migration:run -- -d ./src/config/typeorm/typeorm.migration.config.ts",
     "migrate": "npm run typeorm migration:run -- -d ./src/config/typeorm/typeorm.migration.config.ts",
     "migration:generate": "npm run typeorm -- -d ./src/config/typeorm/typeorm.migration.config migration:generate ./src/modules/$npm_config_module/database/migrations/$npm_config_name%",
@@ -47,7 +49,8 @@
     "pg": "^8.22.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.31"
+    "typeorm": "^0.3.31",
+    "typeorm-seeding": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
