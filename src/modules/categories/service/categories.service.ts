@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Not, Repository } from 'typeorm';
 import { Category } from '../entity/category.entity';
 import { MediaService } from 'src/modules/user/service/media.service';
 import { Flags } from 'src/utility/flags';
@@ -21,7 +21,8 @@ export class CategoriesService {
     const category = await this.repository.findOne({
       where: {
         name: ILike(createCategoryDto.name),
-        storeId: user.storeId as number}
+        storeId: user.storeId as number
+      }
     });
     if (category) {
       throw new HttpException('Category already exist.', HttpStatus.CONFLICT);
@@ -51,6 +52,9 @@ export class CategoriesService {
         flags: status === 'active' ? FlagsEnum.ACTIVE : FlagsEnum.IN_ACTIVE
       },
       relations: ['media'],
+      order: {
+        created_at: 'DESC'
+      },
       skip: offset,
       take: pageSize
     });
@@ -71,7 +75,7 @@ export class CategoriesService {
         id: id,
         storeId: user.storeId as number
       },
-      relations: ['media']
+      relations: ['media', 'products']
     });
 
     if (!category) {
@@ -83,6 +87,18 @@ export class CategoriesService {
   async update(id: number, updateCategoryDto: UpdateCategoryDto, user: User, file?: Express.Multer.File) {
     const category = await this.findOne(id, user);
 
+    // Check if the updated name already exists for another category in the same store
+    const existingCategory = await this.repository.findOne({
+      where: {
+        name: ILike(updateCategoryDto.name as string),
+        storeId: user.storeId as number,
+        id: Not(id)
+      }
+    });
+    if (existingCategory) {
+      throw new HttpException('This category already exists.', HttpStatus.CONFLICT);
+    }
+
     if (file) {
       if (category.media) {
         await this.mediaService.deleteMedia(category.media.id, category.media.key, category.media.name);
@@ -93,7 +109,6 @@ export class CategoriesService {
       category.media = media.id;
     }
     await this.repository.update(category.id, {
-      ...category,
       name: updateCategoryDto.name,
       description: updateCategoryDto.description,
       flags: updateCategoryDto.status ? 1 : 0,

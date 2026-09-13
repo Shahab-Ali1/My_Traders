@@ -65,6 +65,12 @@ export const bootstrapApp = (app: NestExpressApplication) => {
     // app.useGlobalFilters(new NotFoundExceptionFilter());
     app.useGlobalInterceptors(new ResponseInterceptor());
 
+    app.enableCors({
+    origin: 'http://localhost:3001',
+    credentials: true,
+  });
+
+
     // app.enableCors({
     //     origin: [process.env.ADMIN_BASE_PATH, process.env.APP_URL], // Allow specific domains
     //     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Allowed HTTP methods

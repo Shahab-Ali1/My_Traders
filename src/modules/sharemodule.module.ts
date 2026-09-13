@@ -3,13 +3,15 @@ import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { CategoriesModule } from './categories/categories.module';
 import { StoreModule } from "./store/store.module";
+import { ProductsModule } from './products/products.module';
 
 @Module({
     imports: [
         AuthModule,
         StoreModule,
         UserModule,
-        CategoriesModule
+        CategoriesModule,
+        ProductsModule
     ],
 })
 export class shareModule { }
